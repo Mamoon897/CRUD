@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Books</title>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<button id="load-books">Load Books</button>
+<ul id="book-list"></ul>
+
+<script>
+  $(document).ready(function() {
+    $("#load-books").click(function() {
+      $.ajax({
+        url: "https://www.googleapis.com/books/v1/volumes?q=javascript", // Replace with your desired query
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+          // Assuming the API response has an 'items' array with book information
+          displayBooks(data.items);
+        },
+        error: function(error) {
+          console.log("Error fetching books:", error);
+        }
+      });
+    });
+
+    function displayBooks(books) {
+      var bookList = $("#book-list");
+      bookList.empty(); // Clear previous entries
+
+      $.each(books, function(index, book) {
+        var title = book.volumeInfo.title;
+        var authors = book.volumeInfo.authors ? book.volumeInfo.authors.join(", ") : "Unknown";
+
+        var listItem = $("<li>").text(title + " by " + authors);
+        bookList.append(listItem);
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
